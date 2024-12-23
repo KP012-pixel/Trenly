@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trenly - Facebook SDK Integration</title>
+</head>
+<body>
+  <!-- Facebook Root Div (Required for SDK) -->
+  <div id="fb-root"></div>
+
+  <!-- Login Button -->
+  <button id="login-btn" onclick="checkLoginState()">Login with Facebook</button>
+
+  <!-- Script to Load Facebook SDK -->
+  <script>
+    // Asynchronous Initialization of Facebook SDK
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '588846997118433', // Your App ID
+        cookie: true,             // Enable cookies to allow the server to access the session
+        xfbml: true,              // Parse social plugins on this page
+        version: 'v17.0'          // Facebook Graph API version
+      });
+
+      // Optional: Log page views for analytics
+      FB.AppEvents.logPageView();
+    };
+
+    // Load the SDK asynchronously
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Function to Check Login Status
+    function checkLoginState() {
+      FB.getLoginStatus(function (response) {
+        handleLoginResponse(response);
+      });
+    }
+
+    // Handle Login Response
+    function handleLoginResponse(response) {
+      console.log('Login Response:', response);
+
+      if (response.status === 'connected') {
+        // User logged in and authorized
+        console.log('User is logged in and authorized.');
+        fetchUserData();
+      } else if (response.status === 'not_authorized') {
+        console.log('User is logged in but has not authorized the app.');
+      } else {
+        console.log('User is not logged in.');
+      }
+    }
+
+    // Fetch User Data
+    function fetchUserData() {
+      FB.api('/me', { fields: 'id,name,email' }, function (response) {
+        console.log('User Data:', response);
+        alert(`Hello ${response.name}, your email is ${response.email}`);
+      });
+    }
+  </script>
+</body>
+</html>
